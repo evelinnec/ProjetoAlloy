@@ -16,6 +16,7 @@ sig Subgerente extends Gerente{
 }
 
 sig Imovel{
+	inspecao: #dias = 7
 	
 }
 sig Vendas{
@@ -49,12 +50,19 @@ fun TalEmpresa[g: Gerente]: set Pessoa {
 	g.~nome
 }
 
+fun reduzInspecao[i : Imovel] : Int {
+	#(i.inspecao) -= 1
+}
+
 
 ----------------------------Predicados----------------------------
 pred temNoMaxUmSubgerente[s: Subgerente] {
     lone s.~fiscaliza
 }
 
+pred verificaVenda[i:Imovel] {
+	#(i.inspecao) = 0
+}
 
 pred GerentePorSubgerente [g : Gerente] {
 	one g.~supervisiona
