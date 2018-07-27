@@ -15,8 +15,8 @@ sig Subgerente extends Gerente{
 	fiscaliza: #Vendedor < 4
 }
 
-sig Imovel{
-	inspecao: #dias = 7
+abstract sig Imovel{
+	inspecao : set inspecao
 	
 }
 sig Vendas{
@@ -29,8 +29,8 @@ fact  FatosGerais {
 	all v : Vendedor | #vende = 3  
 	all s :Subgerente | one s.~supervisiona
     
-	-- Existe um gerente que esta ligado a um subgerente 
-	some g:Gerente | one  s:Subgerente
+	 Existe um gerente que esta ligado a um subgerente 
+	--some g:Gerente | one  s:Subgerente
 
 }
 
@@ -43,11 +43,16 @@ fact {
 fact {
 	all i: Imovel | one i.~vende
 }
+
+fact ImovelEstaEmVistoria {
+	all i : imovel | imovelEmVistoria[i]
+}
+
+fact ImovelEmLimpeza {
+	all i : imovel | imovelEmLimpeza[i]
+}
 ----------------------------Funcoes----------------------------
 
-fun reduzInspecao[i : Imovel] : Int {
-	#(i.inspecao) -= 1
-}
 
 fun getSubgerente[v: Vendedor] : set Subgerente {
 	v.fiscaliza
@@ -65,8 +70,14 @@ pred temNoMaxUmSubgerente[s: Subgerente] {
     lone s.~fiscaliza
 }
 
-pred verificaVenda[i:Imovel] {
-	#(i.inspecao) = 0
+--verifica se o imovel está em vistoria
+pred imovelEmVistoria[i : imovel]{
+	#(i.inspecao)  <=3
+}
+
+-- verifica se o imovel está em limpeza
+pred imovelEmLimpeza[i : imovel]{
+	#(i.inspecao) >= 4
 }
 
 pred GerentePorSubgerente [g : Gerente] {
